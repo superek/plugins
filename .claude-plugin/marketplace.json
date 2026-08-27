@@ -1,0 +1,30 @@
+{
+  "name": "superek",
+  "description": "개인 플러그인 마켓플레이스. 문제 해결과 학습 루프를 절차로 굳힌 스킬을 배포합니다.",
+  "owner": {
+    "name": "superek",
+    "url": "https://github.com/superek"
+  },
+  "plugins": [
+    {
+      "name": "loop",
+      "source": "./plugins/loop",
+      "description": "증상 추적 → 변경 검증 → 회고 → 스킬화로 이어지는 개발 학습 루프. 다축 렌즈 검사와 적대적 재검증으로 오판을 걸러내고, 검증 끝에 이해도 확인 질문을 남겨 작업이 곧 학습이 되게 합니다.",
+      "version": "0.1.0",
+      "author": {
+        "name": "superek"
+      },
+      "keywords": [
+        "code-review",
+        "debugging",
+        "root-cause",
+        "retrospective",
+        "skill-authoring",
+        "learning",
+        "self-review",
+        "verification"
+      ],
+      "category": "development"
+    }
+  ]
+}

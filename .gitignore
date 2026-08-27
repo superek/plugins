@@ -1,0 +1,11 @@
+# 공개 금지 — 사내 워크플로우 잔해 (jira-workflow 스캐폴드)
+_local/
+
+# 도구·에디터 상태
+.omc/
+.claude/
+.DS_Store
+.idea/
+.vscode/
+
+node_modules/
