@@ -21,12 +21,14 @@ description: 작업 브랜치 diff·특정 파일·PR을 머지 전에 검증할
 **base를 추측하지 않는다.** base가 틀려도 `git diff` 는 멀쩡히 성공하기 때문에 **조용히 엉뚱한 범위를 리뷰하게 된다.** (404처럼 소리가 나지 않는다)
 
 ```bash
-git fetch origin --quiet
-git branch -r --list 'origin/release/*' 'origin/main' 'origin/develop'   # 후보 확인
-git diff --stat origin/<base>...HEAD                                     # 확정 후 실행
+R=$(git remote)                  # ① 원격 이름부터 확인한다. origin 이 아닐 수 있다
+git fetch "$R" --quiet
+git branch -r --list "$R/*"      # ② 그 원격의 브랜치 후보를 본다
+git diff --stat "$R/<base>"...HEAD   # ③ 확정한 뒤에 실행
 ```
 
-- **base에는 항상 `origin/` 을 붙인다.** 로컬 브랜치는 상시 뒤처져 있어서, 로컬 기준으로 재면 남의 변경이 내 diff에 섞인다.
+- **base에는 항상 원격 접두어를 붙인다.** 로컬 브랜치는 상시 뒤처져 있어서, 로컬 기준으로 재면 남의 변경이 내 diff에 섞인다.
+- **원격 이름이 `origin` 이라고 가정하지 않는다.** `git remote` 가 답이다. **틀린 접두어로 `--list` 를 걸면 빈 결과가 나오는데 명령은 성공한다** — "후보 없음"으로 오판하고 base 추측으로 되돌아간다. 원격이 2개 이상이거나 0개면 묻는다.
 - **기본 브랜치가 `main` 이라고 가정하지 않는다.** PR 머지 타겟이 `release/<버전>` 인 팀이면 그쪽이 base다.
 - 후보가 여럿이거나 못 찾으면 → **묻는다.** 확정 전에는 Phase 1로 넘어가지 않는다.
 - 확정한 base를 **판정 한 줄에 같이 적는다.** 예: `base=origin/release/1.4 · 규모 M`
@@ -129,6 +131,7 @@ Phase 2 발견을 그대로 믿지 않는다. **아래 3개 도구로 반박을 
 
 ## 금지
 
+- ❌ 원격 이름(`origin`)·기본 브랜치(`main`)를 확인 없이 가정하기
 - ❌ 스펙 없이 "좋아 보인다" / "LGTM"
 - ❌ 실패 시나리오 없는 지적 (= 취향)
 - ❌ grep 히트 줄만 보고 구조 단정

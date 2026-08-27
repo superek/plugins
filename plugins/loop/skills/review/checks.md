@@ -9,13 +9,16 @@ SKILL.md 의 **Phase 0.5** 와 **수정 요청을 받았을 때** 참조한다.
 
 ## 준비 — base와 대상 파일 고정
 
-**`main` 을 가정하지 않는다.** Phase 0 에서 확정한 base를 변수에 넣고 시작한다.
+**`origin` 도 `main` 도 가정하지 않는다.** 원격 이름은 레포마다 다르고(`bitbucket`·`upstream` 등), 기본 브랜치는 팀마다 다르다. Phase 0 에서 **확정한** 값을 변수에 넣고 시작한다.
 
 ```bash
-BASE=origin/release/1.4             # ← Phase 0 결과를 넣는다
+git remote                          # 원격 이름 확인 — origin 이 아닐 수 있다
+BASE=<원격>/<기준브랜치>            # ← Phase 0 결과를 그대로 넣는다 (예: origin/release/1.4)
 FILES=$(git diff $BASE --name-only --diff-filter=ACM)
 git diff --stat $BASE...HEAD
 ```
+
+⚠️ **존재하지 않는 base는 에러가 나서 바로 드러난다. 위험한 건 "존재하지만 틀린" base다.** 머지 타겟이 `release/*` 인데 `main` 을 쓰면 명령이 멀쩡히 성공하면서 엉뚱한 범위를 검사한다. 같은 이유로 원격 이름을 틀리면 `git branch -r --list` 가 **빈 결과 + 성공**을 낸다.
 
 ## 1. 디버그 잔여물
 
@@ -70,7 +73,7 @@ Turbo·Nx 같은 캐시 러너는 변경 파일이 있는데 cache hit이면 **�
 내 브랜치에서만 통과하는 변경은 머지 후에 base를 깨뜨린다.
 
 ```bash
-git fetch origin --quiet
+git fetch "${BASE%%/*}" --quiet        # $BASE 앞부분이 원격 이름이다
 git log --oneline HEAD..$BASE          # base가 앞서 나갔나?
 ```
 
